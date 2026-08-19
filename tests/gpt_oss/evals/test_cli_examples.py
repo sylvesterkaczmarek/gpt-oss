@@ -17,6 +17,14 @@ def test_full_eval_keeps_unlimited_examples() -> None:
     assert resolve_num_examples(None, debug_mode=False, debug_default=10) is None
 
 
+def test_zero_examples_keeps_full_run_outside_debug() -> None:
+    assert resolve_num_examples(0, debug_mode=False, debug_default=10) is None
+
+
+def test_zero_examples_uses_debug_default_in_debug_mode() -> None:
+    assert resolve_num_examples(0, debug_mode=True, debug_default=10) == 10
+
+
 def test_explicit_subset_uses_single_repeat() -> None:
     assert resolve_n_repeats(2, debug_mode=False) == 1
 
