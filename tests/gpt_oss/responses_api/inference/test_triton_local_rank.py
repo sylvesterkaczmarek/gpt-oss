@@ -28,7 +28,9 @@ def test_load_model_uses_local_rank_for_cuda_device(
     fake_model_module.ModelConfig = object
     fake_model_module.Transformer = FakeTransformer
     monkeypatch.setitem(sys.modules, "gpt_oss.triton.model", fake_model_module)
-    sys.modules.pop("gpt_oss.responses_api.inference.triton", None)
+    monkeypatch.delitem(
+        sys.modules, "gpt_oss.responses_api.inference.triton", raising=False
+    )
 
     triton_backend = importlib.import_module("gpt_oss.responses_api.inference.triton")
     set_device = MagicMock()
