@@ -1,3 +1,4 @@
+from pathlib import Path
 import time
 
 import pytest
@@ -8,6 +9,7 @@ from openai_harmony import (
 )
 
 from gpt_oss.responses_api.api_server import create_api_server
+from gpt_oss.responses_api.serve import expand_checkpoint_path
 
 encoding = load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)
 
@@ -46,3 +48,10 @@ def test_health_check(test_client):
     )
     print(response.json())
     assert response.status_code == 200
+
+
+def test_expand_checkpoint_path_uses_home_directory(monkeypatch, tmp_path):
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
+
+    assert Path(expand_checkpoint_path("~/model")) == tmp_path / "model"
