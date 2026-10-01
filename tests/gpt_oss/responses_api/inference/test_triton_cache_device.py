@@ -23,7 +23,9 @@ def test_get_infer_next_token_places_all_caches_on_model_device(
     fake_model_module.ModelConfig = object
     fake_model_module.Transformer = object
     monkeypatch.setitem(sys.modules, "gpt_oss.triton.model", fake_model_module)
-    sys.modules.pop("gpt_oss.responses_api.inference.triton", None)
+    monkeypatch.delitem(
+        sys.modules, "gpt_oss.responses_api.inference.triton", raising=False
+    )
 
     triton_backend = importlib.import_module("gpt_oss.responses_api.inference.triton")
 
