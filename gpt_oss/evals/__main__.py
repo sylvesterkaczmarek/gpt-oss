@@ -12,24 +12,7 @@ from .chat_completions_sampler import (
     ChatCompletionsSampler,
 )
 from .responses_sampler import ResponsesSampler
-
-
-def _collect_merge_metrics(
-    result_paths: dict[tuple[str, str], str],
-) -> list[dict[str, str | float | None]]:
-    merge_metrics = []
-    for (eval_name, model_name), result_filename in result_paths.items():
-        try:
-            with open(result_filename) as f:
-                result = json.load(f)
-        except Exception as e:
-            print(e, result_filename)
-            continue
-        metric = result.get("f1_score", result.get("score", None))
-        merge_metrics.append(
-            {"eval_name": eval_name, "model_name": model_name, "metric": metric}
-        )
-    return merge_metrics
+from .summary import collect_merge_metrics
 
 
 def main():
@@ -208,7 +191,7 @@ def main():
 
             mergekey2resultpath[(eval_name, model_name)] = result_filename
 
-    merge_metrics = _collect_merge_metrics(mergekey2resultpath)
+    merge_metrics = collect_merge_metrics(mergekey2resultpath)
     print(merge_metrics)
     return merge_metrics
 

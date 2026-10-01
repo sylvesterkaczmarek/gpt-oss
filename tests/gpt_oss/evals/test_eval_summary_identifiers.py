@@ -1,6 +1,6 @@
 import json
 
-from gpt_oss.evals.__main__ import _collect_merge_metrics
+from gpt_oss.evals.summary import collect_merge_metrics
 
 
 def test_collect_merge_metrics_preserves_eval_names_with_underscores(tmp_path) -> None:
@@ -14,7 +14,7 @@ def test_collect_merge_metrics_preserves_eval_names_with_underscores(tmp_path) -
         ("healthbench_consensus", "gpt-oss-20b-high"): str(consensus_result),
     }
 
-    assert _collect_merge_metrics(result_paths) == [
+    assert collect_merge_metrics(result_paths) == [
         {
             "eval_name": "healthbench_hard",
             "model_name": "gpt-oss-120b-low",
@@ -32,6 +32,6 @@ def test_collect_merge_metrics_keeps_f1_score_precedence(tmp_path) -> None:
     result_file = tmp_path / "result.json"
     result_file.write_text(json.dumps({"f1_score": 0.8, "score": 0.2}))
 
-    assert _collect_merge_metrics({("gpqa", "model"): str(result_file)}) == [
+    assert collect_merge_metrics({("gpqa", "model"): str(result_file)}) == [
         {"eval_name": "gpqa", "model_name": "model", "metric": 0.8}
     ]
