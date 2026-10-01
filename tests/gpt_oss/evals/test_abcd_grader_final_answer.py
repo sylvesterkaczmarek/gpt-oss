@@ -39,3 +39,15 @@ def test_fallback_answer_is_not_overridden_by_later_prose() -> None:
 
 def test_single_answer_declaration_is_unchanged() -> None:
     assert extract_abcd("Reasoning complete.\nAnswer: D") == "D"
+
+
+def test_explanatory_option_mention_does_not_override_answer() -> None:
+    text = "Answer: A\nOption B is incorrect because it ignores the premise."
+
+    assert extract_abcd(text) == "A"
+
+
+def test_standalone_choice_declaration_still_overrides_answer() -> None:
+    text = "Answer: A\nI reconsidered.\nChoice: B"
+
+    assert extract_abcd(text) == "B"
