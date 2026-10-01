@@ -35,8 +35,21 @@ _PATTERNS = [
     # 2) Answer: C    or   Answers – D
     re.compile(r'(?ix)\bAnswer[s]?\b\s*[:\-–]?\s*([ABCD])\b'),
 
-    # 3) Option B   or   Choice: C
-    re.compile(r'(?ix)\b(?:Option|Choice)\b\s*[:\-–]?\s*([ABCD])\b'),
+    # 3) Standalone Option/Choice declarations, e.g. "Option B" or "Choice: C".
+    # Requiring the whole line prevents explanatory prose such as
+    # "Option B is incorrect" from overriding an earlier explicit answer.
+    re.compile(
+        r'''(?imx)^\s*
+        (?:\*{1,2}|_{1,2})?
+        (?:Option|Choice)
+        (?:\*{1,2}|_{1,2})?
+        \s*[:\-–]?\s*
+        (?:\*{1,2}|_{1,2})?
+        ([ABCD])
+        (?:\*{1,2}|_{1,2})?
+        \s*[\.)]?\s*$
+        '''
+    ),
 
     # 7) LaTeX \boxed{...A...}, catches both \boxed{A} and
     #    \boxed{\text{A } 2.08\times10^{-6}\,\mathrm{m}} etc.
